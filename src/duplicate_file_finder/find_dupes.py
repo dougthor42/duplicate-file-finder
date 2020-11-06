@@ -51,6 +51,11 @@ def hash_file(filepath: Path) -> str:
     """
     Return the md5 hash of the file.
     """
+    # Skip very large files (100MB)
+    if filepath.stat().st_size > 100e6:
+        logger.trace("skiping hash on large file: '%s'", str(filepath))
+        return "large_file"
+
     args = ["md5sum", str(filepath)]
     # capture_output is python >= 3.7
     #  result = subprocess.run(args, capture_output=True)
@@ -152,10 +157,14 @@ def print_summary(db_file: Path) -> None:
         cursor.execute("SELECT COUNT(*) FROM files WHERE hash = 'error';")
         num_errors = cursor.fetchone()[0]
 
+        cursor.execute("SELECT COUNT(*) FROM files WHERE hash = 'large_file';")
+        num_large = cursor.fetchone()[0]
+
         cursor.execute("SELECT COUNT(*) FROM duplicates")
         num_dupes = cursor.fetchone()[0]
 
     logger.info(f"Found {num_files} files with {num_errors} errors.")
+    logger.info(f"Skipped hashing {num_large} large files.")
     logger.info(f"There are {num_dupes} duplicates found.")
 
 
