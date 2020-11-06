@@ -132,7 +132,8 @@ def find_dupes(db_file: Path) -> None:
         logger.debug(f"Found {len(dupes)} duplicates. Adding to database.")
 
         cursor.executemany(
-            "INSERT INTO duplicates(path, filename, hash) values (?, ?, ?);", dupes
+            "INSERT INTO duplicates(path, filename, hash, qty) values (?, ?, ?, ?);",
+            dupes,
         )
 
 
