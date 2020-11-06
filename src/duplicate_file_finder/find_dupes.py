@@ -101,6 +101,8 @@ def walk_files(starting_dir: Path) -> List[Path]:
             logger.trace(f"{filepath}")
             all_files.append(filepath)
 
+    logger.info(f"Found {len(all_files)} files to process.")
+
     return all_files
 
 
@@ -153,7 +155,7 @@ def print_summary(db_file: Path) -> None:
         cursor.execute("SELECT COUNT(*) FROM duplicates")
         num_dupes = cursor.fetchone()[0]
 
-    logger.info(f"Found {num_files} with {num_errors} errors.")
+    logger.info(f"Found {num_files} files with {num_errors} errors.")
     logger.info(f"There are {num_dupes} duplicates found.")
 
 
