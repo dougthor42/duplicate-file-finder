@@ -42,7 +42,7 @@ def create_db(db_file: Path) -> None:
         )
         cursor.execute(
             """
-            CREATE TABLE duplicates (path text, filename text, hash text);
+            CREATE TABLE duplicates (path text, filename text, hash text, qty int);
             """
         )
 
@@ -114,10 +114,18 @@ def find_dupes(db_file: Path) -> None:
         cursor.execute(
             """
             SELECT
-                path, filename, hash
-            FROM files
-            GROUP BY hash
-            HAVING COUNT(*) > 1;
+                a.path,
+                a.filename,
+                a.hash,
+                b.qty
+            FROM files AS a
+            INNER JOIN
+                (
+                    SELECT *, COUNT(*) AS qty FROM files
+                    GROUP BY hash HAVING COUNT(*) > 1
+                ) AS b
+                ON a.hash = b.hash
+            ORDER BY a.hash;
             """
         )
         dupes = cursor.fetchall()
