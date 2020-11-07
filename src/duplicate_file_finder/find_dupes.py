@@ -188,7 +188,7 @@ def main(path, outfile, batch_size):
     all_files = walk_files(path)
 
     # Pass 2: take the hashes and write to database
-    add_all_files(outfile, all_files)
+    add_all_files(outfile, all_files, chunk_size=batch_size)
 
     find_dupes(outfile)
 
