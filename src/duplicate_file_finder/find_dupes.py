@@ -182,7 +182,8 @@ def print_summary(db_file: Path) -> None:
     type=int,
     help=(
         "Batch size for hashing and adding to database. Setting this to a low"
-        " value will slow things down by increasing file IO."
+        " value will slow things down by increasing file IO, but will make"
+        " the progress bar prediction more accurate."
     ),
 )
 @click.argument("path", type=click.Path(exists=True))
